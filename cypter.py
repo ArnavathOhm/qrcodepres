@@ -13,3 +13,4 @@ def decryptIT(text):
 def acc_ip(filename = "Accesable_IP.txt"):
     with open(filename,"r") as file:
         return file.read().split(",")
+
