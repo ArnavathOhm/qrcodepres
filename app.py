@@ -1,8 +1,8 @@
-from sys import dont_write_bytecode
 from db_connect import Database
 from flask import *
 from test import *
 from datetime import datetime
+import cypter
 
 date = str(datetime.now()).split(" ")[0].replace("-","_")
 
@@ -28,22 +28,26 @@ def landingpage():
         with open("Accesable_IP.txt","a")as fl:
             fl.write(f",{ip}")
 
-    if ip in accesible:
-        id = request.args.get('id')
-        if id == None:
-            return render_template("Bad-Format.html")
-        if date in connect.list_column():
-            try:
-                connect.precence(id)
+    while(True):
+        if ip in accesible:
+            id = cypter.decryptIT(request.args.get('id'))
+            if id == None:
+                return render_template("Bad-Format.html")
+            if date in connect.list_column():
+                if connect.select_user(id) != []:
+                    try:
+                        connect.precence(id)
+                        connect.commit()
+                        return render_template("200-OK.html")
+                    except:
+                        return 'invalid user'
+                else:
+                    return render_template("Bad-Format.html")
+            else:
+                connect.new_column(date)
                 connect.commit()
-                return render_template("200-OK.html")
-            except:
-                return 'invalid user'
         else:
-            connect.new_column(date)
-            connect.commit()
-    else:
-        return render_template("403-Forbidden.html")
+            return render_template("403-Forbidden.html")
     
 if __name__ == "__main__":
     app.run(debug=True)

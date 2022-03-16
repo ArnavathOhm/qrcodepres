@@ -40,6 +40,10 @@ def precence(id):
 #cursor.execute("""DELETE FROM user""")
 #cursor.execute("""ALTER TABLE user DROP COLUMN location""")
 
+def select_user(id):
+    cursor.execute(f"""SELECT * FROM user WHERE user_id = '{id}'""")
+    return cursor.fetchall()
+
 def commit():
     db.commit()
     db.close()

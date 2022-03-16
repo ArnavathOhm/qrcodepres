@@ -46,3 +46,7 @@ class Database():
         self.db.commit()
         self.db.close()
     
+    def select_user(self, id):
+        self.cursor.execute(f"""SELECT * FROM user WHERE user_id = '{id}'""")
+        return self.cursor.fetchall()
+    
