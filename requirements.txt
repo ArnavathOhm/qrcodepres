@@ -1,6 +1,4 @@
 Flask==2.0.1
 cryptography==36.0.1
 pysqlite3
-random
-datetime
 gunicorn
