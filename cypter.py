@@ -2,7 +2,8 @@ from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 import os
 
-load_dotenv(".env")
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, ".env"))
 
 
 def get_key():
@@ -17,7 +18,7 @@ def decryptIT(text):
     try:
         return Fernet(get_key()).decrypt(text.encode("utf-8")).decode("utf-8")
     except:
-        return "0"
+        return None
 
 
 if __name__ == "__main__":

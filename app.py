@@ -2,13 +2,16 @@ from db_connect import Database
 from flask import Flask, request, render_template
 from datetime import datetime
 import cypter
+from os import path
+
+basedir = path.abspath(path.dirname(__file__))
 
 app = Flask(__name__)
-app.config.update(TESTING=False, DATABASE="user_database.db")
+app.config.update(TESTING=False, DATABASE=path.join(basedir, "user_database.db"))
 
 
 def acc_ip():
-    with open("Accesable_IP.txt", "r") as fl:
+    with open(path.join(basedir, "Accesable_IP.txt"), "r") as fl:
         accesible = fl.read().split(",")
     return accesible
 
@@ -26,7 +29,7 @@ def index():
         ip = request.environ["HTTP_X_FORWARDED_FOR"]
 
     if passwr == "uywoaNdqoap12Jd01djls" and ip not in accesible:
-        with open("Accesable_IP.txt", "a") as fl:
+        with open(path.join(basedir, "Accesable_IP.txt"), "a") as fl:
             fl.write(f",{ip}")
 
     if ip in accesible:

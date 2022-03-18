@@ -30,6 +30,12 @@ def test_index_id_no_exists(test_client):
     assert response.status_code == 400
 
 
+def test_index_error_decrypt_id(test_client):
+    id_key = "abcdefghijklmnopqrstuvwqyz1234567"
+    response = test_client.get("/?id=" + id_key)
+    assert response.status_code == 400
+
+
 def test_index_success(test_client):
     id = connect.generate_id()
     connect.add_user(id, "test")
