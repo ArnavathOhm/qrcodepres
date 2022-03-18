@@ -1,11 +1,17 @@
 from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+import os
 
-def get_key(filename = "Key_Compiler.txt"):
-    with open(filename,"r") as file:
-        return file.read().encode("utf-8")
+load_dotenv(".env")
+
+
+def get_key():
+    return os.environ.get("KEY_COMPILER").encode("utf-8")
+
 
 def encriptIT(text):
     return Fernet(get_key()).encrypt(text.encode("utf-8"))
+
 
 def decryptIT(text):
     try:
@@ -13,8 +19,6 @@ def decryptIT(text):
     except:
         return "0"
 
-def acc_ip(filename = "Accesable_IP.txt"):
-    with open(filename,"r") as file:
-        return file.read().split(",")
 
-print(encriptIT("1").decode("utf-8"))
+if __name__ == "__main__":
+    print(encriptIT("1").decode("utf-8"))
