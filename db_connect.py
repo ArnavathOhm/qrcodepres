@@ -1,5 +1,4 @@
 import sqlite3
-from datetime import datetime
 from random import randint
 
 
@@ -42,10 +41,20 @@ class Database:
     # cursor.execute("""DELETE FROM user""")
     # cursor.execute("""ALTER TABLE user DROP COLUMN location""")
 
-    def commit(self):
-        self.db.commit()
-        self.db.close()
-
     def select_user(self, id):
         self.cursor.execute(f"""SELECT * FROM user WHERE user_id = '{id}'""")
         return self.cursor.fetchall()
+
+    def create(self):
+        self.cursor.execute(
+            """
+        CREATE TABLE IF NOT EXISTS
+        user(user_id INTEGER PRIMARY KEY, user_name TEXT)
+        """
+        )
+
+    def delete_all(self):
+        self.cursor.execute(
+            """
+        DELETE FROM user
+        """)

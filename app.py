@@ -4,6 +4,7 @@ from datetime import datetime
 import cypter
 
 app = Flask(__name__)
+app.config.update(TESTING=False, DATABASE="user_database.db")
 
 
 def acc_ip():
@@ -13,10 +14,10 @@ def acc_ip():
 
 
 @app.route("/")
-def landingpage():
+def index():
     date = str(datetime.now()).split(" ")[0].replace("-", "_")
     accesible = acc_ip()
-    connect = Database("user_database.db")
+    connect = Database(app.config["DATABASE"])
     passwr = request.args.get("ert426ip")
 
     if request.environ.get("HTTP_X_FORWARDED_FOR") is None:
@@ -36,7 +37,8 @@ def landingpage():
             if date not in connect.list_column():
                 connect.new_column(date)
             connect.precence(id, date)
-            connect.commit()
+            connect.db.commit()
+            connect.db.close()
             return render_template("200-OK.html"), 200
         else:
             return render_template("Bad-Format.html"), 400
