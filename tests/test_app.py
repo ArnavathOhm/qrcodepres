@@ -1,11 +1,12 @@
 from app import app
 from db_connect import Database
+from config import Testing
 import cypter
 import pytest
 
 
-app.config.update(TESTING=True, DATABASE="test.db")
-connect = Database("test.db")
+app.config.from_object(Testing)
+connect = Database(app.config["DATABASE_URL"])
 connect.create()
 
 
@@ -14,8 +15,6 @@ def test_client():
     with app.test_client() as testing_client:
         with app.app_context():
             yield testing_client
-            connect.delete_all()
-            connect.db.commit()
 
 
 def test_index_no_id(test_client):
@@ -39,8 +38,11 @@ def test_index_error_decrypt_id(test_client):
 def test_index_success(test_client):
     id = connect.generate_id()
     connect.add_user(id, "test")
-    connect.db.commit()
+    connect.session.commit()
 
     id_key = cypter.encriptIT(id).decode("utf-8")
     response = test_client.get("/?id=" + id_key)
     assert response.status_code == 200
+
+    connect.delete_all()
+    connect.session.commit()

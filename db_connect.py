@@ -1,32 +1,35 @@
-import sqlite3
 from random import randint
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 
 class Database:
-    def __init__(self, filename):
-        self.db = sqlite3.connect(filename)
-        self.cursor = self.db.cursor()
+    def __init__(self, url):
+        self.db = create_engine(url)
+        self.session = Session(self.db)
 
     def list_column(self):
         column_name = []
-        for i in self.cursor.execute("""PRAGMA table_info(user)"""):
+        for i in self.session.execute("""PRAGMA table_info(user)"""):
             column_name.append(i[1])
         return column_name
 
     def update(self, changed_par_col, search_col, value, recent):
-        self.cursor.execute(
+        self.session.execute(
             f"""UPDATE user SET '{changed_par_col}' = '{value}' WHERE {search_col} = '{recent}'"""
         )
 
     def new_column(self, col_name):
-        self.cursor.execute(f"""ALTER TABLE user ADD COLUMN '{col_name}'""")
+        self.session.execute(f"""ALTER TABLE user ADD COLUMN '{col_name}'""")
 
     def generate_id(self):
         randnum = str(randint(0, 10000000))
+        while self.select_user(randnum):
+            randnum = str(randint(0, 10000000))
         return randnum.zfill(7)
 
     def add_user(self, id, username):
-        self.cursor.execute(
+        self.session.execute(
             f"""INSERT INTO user (user_id, user_name) VALUES ({id}, '{username}')"""
         )
 
@@ -42,11 +45,12 @@ class Database:
     # cursor.execute("""ALTER TABLE user DROP COLUMN location""")
 
     def select_user(self, id):
-        self.cursor.execute(f"""SELECT * FROM user WHERE user_id = '{id}'""")
-        return self.cursor.fetchall()
+        return self.session.execute(
+            f"""SELECT * FROM user WHERE user_id = '{id}'"""
+        ).all()
 
     def create(self):
-        self.cursor.execute(
+        self.session.execute(
             """
         CREATE TABLE IF NOT EXISTS
         user(user_id INTEGER PRIMARY KEY, user_name TEXT)
@@ -54,7 +58,8 @@ class Database:
         )
 
     def delete_all(self):
-        self.cursor.execute(
+        self.session.execute(
             """
         DELETE FROM user
-        """)
+        """
+        )
