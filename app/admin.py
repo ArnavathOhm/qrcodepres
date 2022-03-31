@@ -6,5 +6,5 @@ from flask_admin.contrib.sqla import ModelView
 
 
 admin = Admin(app, name="qrcodepres", template_mode="bootstrap4", index_view=IndexHomeView())
-admin.add_view(ModelView(User, db.session, endpoint="user"))
-admin.add_view(ModelView(Date, db.session))
+admin.add_view(ModelView(User, db.session, endpoint="user", name="User"))
+admin.add_view(ModelView(Date, db.session, name="Date"))

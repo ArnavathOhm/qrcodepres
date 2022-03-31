@@ -6,6 +6,7 @@ flask-migrate==3.1.0
 flask-admin==1.6.0
 flask-login==0.6.0
 flask-table==0.5.0
-python-dotenv
+xlsxwriter==3.0.3
+python-dotenv==0.19.2
 psycopg2
 gunicorn

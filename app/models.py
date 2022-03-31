@@ -1,4 +1,5 @@
 from . import db
+from datetime import datetime, timedelta
 
 dates = db.Table(
     "dates",
@@ -45,3 +46,12 @@ def get_db_columns():
     for date in Date.query.all():
         res.append(date.date.strftime("%Y-%m-%d"))
     return res
+
+
+def precence(user):
+    date_now = datetime.utcnow().date() + timedelta(hours=7)
+    date = Date.query.filter_by(date=date_now).first()
+    if not date:
+        date = Date(date=date_now)
+    user.dates.append(date)
+    db.session.commit()
