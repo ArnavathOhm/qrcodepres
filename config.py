@@ -7,14 +7,19 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Production:
     TESTING = False
-    DATABASE_URL = os.environ.get("DATABASE_URL") or "sqlite:///" + os.path.join(
-        basedir, "user_database.db"
-    )
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "dn98738ynid0qna948hAFahw"
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL"
+    ) or "sqlite:///" + os.path.join(basedir, "user_database.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    FLASK_ADMIN_SWATCH = "cerulean"
 
-    if "postgres:" in DATABASE_URL:
-        DATABASE_URL = DATABASE_URL.replace("postgres:", "postgresql:")
+    if "postgres:" in SQLALCHEMY_DATABASE_URI:
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace(
+            "postgres:", "postgresql:"
+        )
 
 
-class Testing:
+class Testing(Production):
     TESTING = True
-    DATABASE_URL = "sqlite:///" + os.path.join(basedir, "test.db")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "test.db")

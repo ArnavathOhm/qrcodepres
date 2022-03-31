@@ -1,7 +1,7 @@
-from app import app
+from app.routes import app
 from db_connect import Database
 from config import Testing
-import cypter
+import app.cypter as cypter
 import pytest
 
 
